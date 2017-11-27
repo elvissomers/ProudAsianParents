@@ -13,7 +13,7 @@ body{
     fill:none;
 }
 
-header {
+.header {
     width:350px;
     height:80px;
     position:fixed;
@@ -27,7 +27,7 @@ header {
     border-bottom-left-radius:10px;
 }
 
-header input{
+.header input{
     width:100%;
     height:50px;
     float:left;
@@ -63,25 +63,25 @@ header input{
 
 /* These are fixes to make the app run in any browser */
 
-header input::-webkit-input-placeholder{
+.header input::-webkit-input-placeholder{
     color:rgba(255,255,255,0.8);
 }
 
-header input::-moz-input-placeholder{
+.header input::-moz-input-placeholder{
     color:rgba(255,255,255,0.8);
 }
 
-header input::-wmoz-input-placeholder{
+.header input::-wmoz-input-placeholder{
     color:rgba(255,255,255,0.8);
 }
 
-header input::-ms-input-placeholder{
+.header input::-ms-input-placeholder{
     color:rgba(255,255,255,0,8);
 }
 
 /* The button to click on when you want to add an habit */
 
-header button{
+.header button{
     width:50px;
     height:50px;
     position:absolute;
@@ -103,7 +103,7 @@ header button{
     /* appearance:none; */
 }
 
-header button svg{
+.header button svg{
     width:16px;
     height:16px;
     position: absolute;
@@ -112,12 +112,12 @@ header button svg{
     margin:-8px 0 0 -8px;
 }
 
-header button svg .fill{
+.header button svg .fill{
     fill:#25b99a;
 }
 
 .container{
-    width:100%;
+    width:350px;
     float:left;
     padding:15px;
 }
@@ -130,7 +130,7 @@ ul.todo{
 }
 
 ul.todo li{
-    width:320px;
+    width:100%;
     min-height:50px;
     float:left;
 
@@ -145,6 +145,7 @@ ul.todo li{
     box-shadow:0px 1px 2px rgba(44,62,80,0.1);
     margin: 0 0 10px 0;
     padding: 14px 100px 14px 14px;
+    white-space: pre-wrap;
 
 }
 
@@ -152,6 +153,7 @@ ul.todo li{
 ul.todo li:last-of-type{
     margin:0;
 }
+
 
 ul.todo li .buttons{
     width: 100px;
@@ -251,13 +253,13 @@ ul.todo .buttons button.remove:hover svg .fill{
     fill:#25b99a;
  }
 
- ul.todo#completed:not(:empty){
+ ul.todo#completed{
      position:relative;
      padding:60px 0 0 0;
  }
 
  /* Check this stuff */
- ul.todo#completed:not(:empty):before {
+ ul.todo#completed:before {
      content: '';
      width:150px;
      height:2px;
@@ -267,3 +269,21 @@ ul.todo .buttons button.remove:hover svg .fill{
      left:50%;
      margin: 0 0 0 -75px;
  }
+
+ /* ul.todo#todo:after{
+     content: 'You have nothing to do!';
+     margin:15px 0 0 0;
+ }
+
+ ul.todo#completed:after{
+     content: "You have not yet completed any tasks."
+ }
+
+ ul.todo#todo:after,
+ ul.todo#completed:after{
+     width:100%;
+     display:block;
+     text-align:center;
+     font-size:12px;
+     color:#aaa;
+ } */

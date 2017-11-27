@@ -34,9 +34,6 @@ var completeSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:x
 
 renderList();
 
-
-console.log("1")
-
 document.getElementById('add').addEventListener('click', function () {
     var value = document.getElementById('item').value;
 
@@ -82,8 +79,6 @@ function renderList() {
     if (!data.todo.length && !data.completed.length && !data.nottodo.length && !data.notdone.length) {
         return;
     }
-    console.log('0');
-    console.log(data.completed.length);
 
     for (var k = 0; k < data.nottodo.length; k++) {
         var value = data.nottodo[k];
@@ -201,15 +196,11 @@ function completeItem() {
     var parent = item.parentNode;
     var parentID = parent.id;
     var value = item.innerText;
-    console.log('clicked');
 
     if (parentID === 'todo') {
-        console.log('pussshinggg into data');
         data.todo.splice(data.todo.indexOf(value), 1);
         data.completed.push(value);
-        console.log(data.completed);
     } else if (parentID === 'nottodo') {
-        console.log('clicked not to do');
         data.nottodo.splice(data.nottodo.indexOf(value), 1);
         data.notdone.push(value);
     } else if (parentID === 'notdone') {
@@ -225,8 +216,7 @@ function completeItem() {
     if (parentID === 'todo') {
         // Its a to do item to be completed
         target = document.getElementById('completed');
-    } else if (parentID === 'nottodo') {
-        console.log('yes clicked no to tt o do');
+    } else if (parentID === 'nottodo') {;
         target = document.getElementById('notdone');
     } else if (parentID === 'notdone') {
         target = document.getElementById('nottodo');

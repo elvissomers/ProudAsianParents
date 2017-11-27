@@ -101,7 +101,7 @@ function renderList() {
     }
 
     for (var j = 0; j < data.completed.length; j++) {
-        var value = data.completed[i];
+        var value = data.completed[j];
         addItemToDOM(value, 2);
     }
 
@@ -227,9 +227,9 @@ function completeItem() {
         target = document.getElementById('completed');
     } else if (parentID === 'nottodo') {
         console.log('yes clicked no to tt o do');
-        target = document.getElementById('nottodo');
-    } else if (parentID === 'notdone') {
         target = document.getElementById('notdone');
+    } else if (parentID === 'notdone') {
+        target = document.getElementById('nottodo');
     } else {
         // Its a completed item to be redone
         target = document.getElementById('todo');

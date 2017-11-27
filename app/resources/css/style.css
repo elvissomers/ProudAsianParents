@@ -26,6 +26,10 @@ body{
     border-radius:10px;
 }
 
+.badhabits .header{
+    background:#e85656;
+}
+
 .header input{
     width:100%;
     height:50px;
@@ -113,6 +117,10 @@ body{
 
 .header button svg .fill{
     fill:#25b99a;
+}
+
+.badhabits .header button svg .fill{
+    fill: #e85656;
 }
 
 .container{
@@ -227,6 +235,11 @@ ul.todo#completed li .buttons button.complete svg{
    border:0px; 
 }
 
+ul.todo#notdone li .buttons button.complete svg{
+    background:#25b99a;
+    border:0px; 
+ }
+
 ul.todo:not(#completed) .buttons button.complete:hover svg {
     background:rgba(37,185,154,0.75);
 }
@@ -236,6 +249,10 @@ ul.todo:not(#completed) .buttons button.complete:hover svg .fill{
 }
 
 ul.todo#completed li .buttons button.complete svg .fill{
+    fill:#fff;
+}
+
+ul.todo#notdone li .buttons button.complete svg .fill{
     fill:#fff;
 }
 

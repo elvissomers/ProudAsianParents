@@ -1,0 +1,12 @@
+@charset "UTF-8";
+
+@keyframes animation {
+    from {background-color: red;}
+    to {background-color: blue;}
+    
+}
+
+header{
+    animation-name: animation;
+    animation-duration: 2s;
+}

@@ -67,14 +67,14 @@ document.getElementById('item2').addEventListener('keydown', function (e) {
 });
 
 function addItem(value) {
-    addItemToDOM(value,1,1);
+    addItemToDOM(value, 1, 1);
     document.getElementById('item').value = '';
     data.todo.push(value);
     dataObjectUpdate();
 }
 
 function addItem2(value) {
-    addItemToDOM(value, 3,1);
+    addItemToDOM(value, 3, 1);
     document.getElementById('item2').value = '';
     data.nottodo.push(value);
     dataObjectUpdate();
@@ -87,26 +87,27 @@ function addItem2(value) {
 function renderList() {
     if (!data.todo.length && !data.completed.length && !data.nottodo.length && !data.notdone.length) {
         return;
-    }
+    } else {
 
-    for (var k = 0; k < data.nottodo.length; k++) {
-        var value = data.nottodo[k];
-        addItemToDOM(value, 3,1);
-    }
+        for (var k = 0; k < data.nottodo.length; k++) {
+            var value = data.nottodo[k];
+            addItemToDOM(value, 3, 1);
+        }
 
-    for (var l = 0; l < data.notdone.length; l++) {
-        var value = data.notdone[l];
-        addItemToDOM(value, 4,1);
-    }
+        for (var l = 0; l < data.notdone.length; l++) {
+            var value = data.notdone[l];
+            addItemToDOM(value, 4, 1);
+        }
 
-    for (var i = 0; i < data.todo.length; i++) {
-        var value = data.todo[i];
-        addItemToDOM(value, 1,1);
-    }
+        for (var i = 0; i < data.todo.length; i++) {
+            var value = data.todo[i];
+            addItemToDOM(value, 1, 1);
+        }
 
-    for (var j = 0; j < data.completed.length; j++) {
-        var value = data.completed[j];
-        addItemToDOM(value, 2,1);
+        for (var j = 0; j < data.completed.length; j++) {
+            var value = data.completed[j];
+            addItemToDOM(value, 2, 1);
+        }
     }
 
 }
@@ -254,7 +255,7 @@ function completeItem() {
 function editItem() {
     var item = this.parentNode.parentNode;
     // var text = item.innerText;
-    
+
     var parent = item.parentNode;
     // console.log(parent.indexOf(item));
     var parentID = parent.id;
@@ -262,8 +263,8 @@ function editItem() {
     var oldvalue = item.innerText;
     var index;
 
-    for(var i = 0; i < parent.childNodes.length; i++){
-        if(parent.childNodes[i] == item){
+    for (var i = 0; i < parent.childNodes.length; i++) {
+        if (parent.childNodes[i] == item) {
             index = i;
         }
     }
@@ -273,28 +274,28 @@ function editItem() {
     if (parentID === 'todo' || parentID === 'completed') {
         value = document.getElementById('item').value;
         document.getElementById('item').value = '';
-    } else{
+    } else {
         value = document.getElementById('item2').value;
         document.getElementById('item2').value = '';
     }
     var target;
 
-    if(value){
+    if (value) {
         // item.innerText = value;
         if (parentID === 'todo') {
             target = 1;
-            data.todo.splice((data.todo.length-index),0,value);
+            data.todo.splice((data.todo.length - index), 0, value);
         } else if (parentID === 'nottodo') {
             target = 3;
-            data.nottodo.splice((data.nottodo.length-index),0,value);
+            data.nottodo.splice((data.nottodo.length - index), 0, value);
         } else if (parentID === 'notdone') {
             target = 4;
-            data.notdone.splice((data.notdone.length-index),0,value);
+            data.notdone.splice((data.notdone.length - index), 0, value);
         } else {
             target = 2;
-            data.completed.splice((data.completed.length-index),0,value);
+            data.completed.splice((data.completed.length - index), 0, value);
         }
-    
+
         // item.removeItem();
         addItemToDOM(value, target, index);
         dataObjectUpdate();

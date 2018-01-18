@@ -6,9 +6,9 @@
  */
 
 
-//  window.onload = function(){
-//      do stuff;
-//  }
+ //window.onload = function(){
+ //    var add = document.getElementById('add');
+ //}
 
 // document.getElementById('add').onclick;
 
@@ -18,13 +18,21 @@
 // If there is any text inside the item field, add that text to the todo list
 
 // Remove and complete SVG codes
-
 var data = (localStorage.getItem('todoList')) ? JSON.parse(localStorage.getItem('todoList')) : { // Object
     todo: [],
     completed: [],
     nottodo: [],
     notdone: [],
 }
+
+function goodHabit(Title) {
+    this.Title = Title;
+}
+
+function badHabit(Title) {
+    this.Title = Title;
+}
+
 
 
 
@@ -33,7 +41,6 @@ var completeSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:x
 var editSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 129 129"> <g> <g> <path d="m119.2,114.3h-109.4c-2.3,0-4.1,1.9-4.1,4.1s1.9,4.1 4.1,4.1h109.5c2.3,0 4.1-1.9 4.1-4.1s-1.9-4.1-4.2-4.1z"/> <path d="m5.7,78l-.1,19.5c0,1.1 0.4,2.2 1.2,3 0.8,0.8 1.8,1.2 2.9,1.2l19.4-.1c1.1,0 2.1-0.4 2.9-1.2l67-67c1.6-1.6 1.6-4.2 0-5.9l-19.2-19.4c-1.6-1.6-4.2-1.6-5.9-1.77636e-15l-13.4,13.5-53.6,53.5c-0.7,0.8-1.2,1.8-1.2,2.9zm71.2-61.1l13.5,13.5-7.6,7.6-13.5-13.5 7.6-7.6zm-62.9,62.9l49.4-49.4 13.5,13.5-49.4,49.3-13.6,.1 .1-13.5z"/> </g> </g></svg>';
 
 renderList();
-console.log("1");
 
 document.getElementById('add').addEventListener('click', function () {
     var value = document.getElementById('item').value;
@@ -42,6 +49,7 @@ document.getElementById('add').addEventListener('click', function () {
         addItem(value);
     }
 });
+
 
 document.getElementById('add2').addEventListener('click', function () {
     var value = document.getElementById('item2').value;
@@ -67,10 +75,24 @@ document.getElementById('item2').addEventListener('keydown', function (e) {
 
 function addItem(value) {
     addItemToDOM(value, 1, 1);
-    document.getElementById('item').value = '';
+    document.getElementById('item').value= '';
     data.todo.push(value);
     dataObjectUpdate();
+
+    if(!(value == null || value == false)){
+    $.ajax({
+        type: 'get',
+        url: '/add-goodhabit',
+        data: "Title=" + value,
+        success: function (data) {
+            alert('succesful');
+            location.reload();
+        }
+        });
+    }
 }
+
+
 
 function addItem2(value) {
     addItemToDOM(value, 3,1);
@@ -79,7 +101,6 @@ function addItem2(value) {
     dataObjectUpdate();
 	$.ajax({type:'get',
         url:'/add-badhabit',
-        data:'Good=true',
         success: function(data){
           //do something with the data via front-end framework
           location.reload();

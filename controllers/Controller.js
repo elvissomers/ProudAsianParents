@@ -1,12 +1,5 @@
-
-var bodyParser = require('body-parser');
-var urlencodedParser = bodyParser.urlencoded({extended: false});
-
 module.exports = function(app){
     var url = require("url");
-    var x = ('../public/memory.json');
-    var badhabits = [];
-    var goodhabits = [];
 
     var mysql      = require('mysql');
     var connection = mysql.createConnection({
@@ -16,82 +9,104 @@ module.exports = function(app){
         database : 'habit'
     });
 
-
-
-    app.get('/habits', function(req, res) {
-      var fs = require('fs');
-      var obj;
-      fs.readFile('./public/memory.json', 'utf8', function (err, data) {
-        if (err) throw err;
-        obj = JSON.parse(data);
-      });
-      res.json(obj);
+    app.get('/habit', function(req, res){
+        res.render('habit');
     })
 
-    app.get('/habitss', function(req, res){
+    app.get('/habir', function(req, res){
         res.render('habit');
-    });
+    })
 
-    app.get('/habis', function(req, res){
+    app.get('/habig', function(req, res){
         res.render('habit');
-    });
-
-
-
-
-
-    app.get('/goodbye', function(req, res){
-      res.send("Goodbye you!");
-    });
-
-    app.get('/habit', function(req, res){
-      res.render('habit');
-    });
+    })
 
     app.get('/edithabit', function(req, res){
 
     })
 
-    app.get("/todos", function (req, res) {
-        console.log("todos requested!");
-        res.json(badhabits);
+    app.get('/add-habit', function (req, res) {
+        var query = url.parse(req.url, true).query;
+
+        connection.query('SELECT id FROM habit ORDER BY id DESC LIMIT 1', function(err, rows, fields){
+            if(!err) {
+                var newId;
+                if(rows.length) {
+                    newId = rows[0].id + 1;
+                } else {
+                    newId = 0;
+                }
+                connection.query('INSERT INTO habit (id, title, description, creationDate, good) VALUES ' +
+                    '(' + newId + ',"' + query["title"] + '","empty", (SELECT NOW()),' + query["good"] +')', function(err, rows, fields) {
+                    if(!err) {
+                        res.json(newId);
+                    } else {
+                        console.log(err);
+                    }
+                });
+            } else {
+                console.log(err);
+            }
+        });
     });
 
+    app.get('/delete-habit', function(req, res){
+        var query = url.parse(req.url, true).query;
 
+        connection.query('DELETE FROM habit_done WHERE habit_id=' + query["id"], function(err, rows, fields) {
+            if(err)
+                console.log(err);
+        });
 
-    app.get('/add-goodhabit', function (req, res) {
-        var url_parts = url.parse(req.url, true);
-        var query = url_parts.query;
-
-        if(query["Title="]!==undefined) {
-            var tx = { message : query["Title="]};
-            goodhabits.push(tx);
-            console.log("Added " + tx.message);
-            res.end("Habit added successfully");
-        }
-        else {
-            res.end("Error: missing message parameter");
-        }
+        connection.query('DELETE FROM habit WHERE id=' + query["id"], function(err, rows, fields) {
+            if(err)
+                console.log(err);
+        });
     });
 
+    app.get('/finish', function(req, res) {
+        var query = url.parse(req.url, true).query;
 
+        connection.query('SELECT COUNT(habit_id) AS count FROM habit_done WHERE habit_id = ' + query["id"], function(err, rows, fields) {
+            if(rows[0].count === 0) {
+                connection.query('INSERT INTO habit_done (habit_id, timestamp) VALUES (' + query["id"] + ', (SELECT NOW()))', function(err, rows, fields) {
+                    if(!err) {
+                        res.send(rows);
+                    } else {
+                        console.log(err);
+                    }
+                });
+            } else {
+                connection.query('DELETE FROM habit_done WHERE habit_id = ' + query["id"], function(err, rows, fields) {
+                    if(err) {
+                        console.log(err);
+                    }
+                })
+            }
+        });
 
-    app.get('/add-badhabit',urlencodedParser, function(err,content){
-      	if(err) throw err;
-        var parseJson = JSON.parse(content);
-        for (i=0; i <11 ; i++){
-          parseJson.table.push({id:i, square:i*i})
-        }
-        fs.writeFile('./public/memory.json',JSON.stringify(parseJson),function(err){
-          if(err) throw err;
+    });
+
+    app.get('/get-habits', function(req, res) {
+        connection.query('SELECT DISTINCT id, title, description, creationDate, good, timestamp AS completed ' +
+                         'FROM habit LEFT JOIN habit_done on habit.id=habit_done.habit_id ' +
+                         'ORDER BY habit.id',
+            function(err, rows, fields) {
+                if(!err) {
+                    res.send(rows);
+                } else {
+                    console.log(err);
+                }
+            });
+    });
+
+    app.get('/edit-title', function(req, res) {
+        var query = url.parse(req.url, true).query;
+
+        connection.query('UPDATE habit SET title="' + query["title"] + '" WHERE id =' + query["id"], function(err, rows, fields) {
+            if(err) {
+                console.log(err);
+            }
         })
-    });
-
-    app.delete('/habit/:item', function(req, res){
-      data = data.filter(function(habit){
-        return habit.item.replace(/ /g, '-') !== req.params.item;
-      });
-      res.json(data);
-    });
-
+    })
 };

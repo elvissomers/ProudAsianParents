@@ -1,46 +1,41 @@
-/**
- * This is what you would do if the <script></script> code was
- * placed in the head instead of the body.
- *
- * That is because .html files load from top to bottom
- */
+var data = [];
 
-
- //window.onload = function(){
- //    var add = document.getElementById('add');
- //}
-
-// document.getElementById('add').onclick;
-
-// or
-
-// User clicked on the add button
-// If there is any text inside the item field, add that text to the todo list
-
-// Remove and complete SVG codes
-var data = (localStorage.getItem('todoList')) ? JSON.parse(localStorage.getItem('todoList')) : { // Object
-    todo: [],
-    completed: [],
-    nottodo: [],
-    notdone: [],
+function getIndex(title) {
+    for(var i = 0; i < data.length; i++) {
+        if(data[i].title === title) {
+            return i;
+        }
+    }
 }
 
-function goodHabit(Title) {
-    this.Title = Title;
+function refresh() {
+    $.get( "/get-habits", function( newData ) {
+        data = newData.slice(0);
+    });
+
+    renderList();
 }
 
-function badHabit(Title) {
-    this.Title = Title;
+refresh();
+renderList();
+
+function habit(title, id, good) {
+    this.title = title;
+    this.id = id;
+    this.description = "empty";
+    this.creationDate = null;
+    this.good = good;
+    this.completed = false;
 }
-
-
-
 
 var removeSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" style="enable-background:new 0 0 22 22;" xml:space="preserve"> <rect class="noFill" width="22" height="22"/> <g> <g> <path class="fill" d="M16.1,3.6h-1.9V3.3c0-1.3-1-2.3-2.3-2.3h-1.7C8.9,1,7.8,2,7.8,3.3v0.2H5.9c-1.3,0-2.3,1-2.3,2.3v1.3 c0,0.5,0.4,0.9,0.9,1v10.5c0,1.3,1,2.3,2.3,2.3h8.5c1.3,0,2.3-1,2.3-2.3V8.2c0.5-0.1,0.9-0.5,0.9-1V5.9 C18.4,4.6,17.4,3.6,16.1,3.6z M9.1,3.3c0-0.6,0.5-1.1,1.1-1.1h1.7c0.6,0,1.1,0.5,1.1,1.1v0.2H9.1V3.3z M16.3,18.7 c0,0.6-0.5,1.1-1.1,1.1H6.7c-0.6,0-1.1-0.5-1.1-1.1V8.2h10.6L16.3,18.7L16.3,18.7z M17.2,7H4.8V5.9c0-0.6,0.5-1.1,1.1-1.1h10.2 c0.6,0,1.1,0.5,1.1,1.1V7z"/> </g> <g> <g> <path class="fill" d="M11,18c-0.4,0-0.6-0.3-0.6-0.6v-6.8c0-0.4,0.3-0.6,0.6-0.6s0.6,0.3,0.6,0.6v6.8C11.6,17.7,11.4,18,11,18z"/> </g> <g> <path class="fill" d="M8,18c-0.4,0-0.6-0.3-0.6-0.6v-6.8C7.4,10.2,7.7,10,8,10c0.4,0,0.6,0.3,0.6,0.6v6.8C8.7,17.7,8.4,18,8,18z"/> </g> <g> <path class="fill" d="M14,18c-0.4,0-0.6-0.3-0.6-0.6v-6.8c0-0.4,0.3-0.6,0.6-0.6c0.4,0,0.6,0.3,0.6,0.6v6.8 C14.6,17.7,14.3,18,14,18z"/> </g> </g> </g> </svg>';
 var completeSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" style="enable-background:new 0 0 22 22;" xml:space="preserve"> <rect y="0" class="noFill" width="22" height="22"/> <g> <path class="fill" d="M9.7,14.4L9.7,14.4c-0.2,0-0.4-0.1-0.5-0.2l-2.7-2.7c-0.3-0.3-0.3-0.8,0-1.1s0.8-0.3,1.1,0l2.1,2.1l4.8-4.8 c0.3-0.3,0.8-0.3,1.1,0s0.3,0.8,0,1.1l-5.3,5.3C10.1,14.3,9.9,14.4,9.7,14.4z"/> </g> </svg>';
 var editSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 129 129" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 129 129"> <g> <g> <path d="m119.2,114.3h-109.4c-2.3,0-4.1,1.9-4.1,4.1s1.9,4.1 4.1,4.1h109.5c2.3,0 4.1-1.9 4.1-4.1s-1.9-4.1-4.2-4.1z"/> <path d="m5.7,78l-.1,19.5c0,1.1 0.4,2.2 1.2,3 0.8,0.8 1.8,1.2 2.9,1.2l19.4-.1c1.1,0 2.1-0.4 2.9-1.2l67-67c1.6-1.6 1.6-4.2 0-5.9l-19.2-19.4c-1.6-1.6-4.2-1.6-5.9-1.77636e-15l-13.4,13.5-53.6,53.5c-0.7,0.8-1.2,1.8-1.2,2.9zm71.2-61.1l13.5,13.5-7.6,7.6-13.5-13.5 7.6-7.6zm-62.9,62.9l49.4-49.4 13.5,13.5-49.4,49.3-13.6,.1 .1-13.5z"/> </g> </g></svg>';
 
-renderList();
+setInterval(function () {
+    refresh();
+    renderList();
+}, 1000);
 
 document.getElementById('add').addEventListener('click', function () {
     var value = document.getElementById('item').value;
@@ -74,67 +69,65 @@ document.getElementById('item2').addEventListener('keydown', function (e) {
 });
 
 function addItem(value) {
-    addItemToDOM(value, 1, 1);
-    document.getElementById('item').value= '';
-    data.todo.push(value);
-    dataObjectUpdate();
-
+    var index;
     if(!(value == null || value == false)){
-    $.ajax({
-        type: 'get',
-        url: '/add-goodhabit',
-        data: "Title=" + value,
-        success: function (data) {
-            alert('succesful');
-            location.reload();
-        }
+        $.ajax({
+            type: 'get',
+            url: '/add-habit',
+            data: "title=" + value + "&good=true",
+            success: function (data) {
+                index = data;
+            }
         });
     }
+
+    addItemToDOM(value, 1, 1);
+    document.getElementById('item').value= '';
+    var newHabit = new habit(value, index, true);
+    data.push(newHabit);
 }
 
 
 
 function addItem2(value) {
-    addItemToDOM(value, 3,1);
-    document.getElementById('item2').value = '';
-    data.nottodo.push(value);
-    dataObjectUpdate();
-	$.ajax({type:'get',
-        url:'/add-badhabit',
+    var index;
+    $.ajax({type:'get',
+        url:'/add-habit',
+        data:"title=" + value + "&good=false",
         success: function(data){
-          //do something with the data via front-end framework
-          location.reload();
+            index = data;
         }
     });
+
+    addItemToDOM(value, 3,1);
+    document.getElementById('item2').value = '';
+    var newHabit = new habit(value, index, false);
+    data.push(newHabit);
 }
 
 /**
- * rederList render the lists of to-do's and not-to-do's
- * as it was safed in the data var from previous sessions.
+ * renderList render the lists of to-do's and not-to-do's
+ * as it was saved in the data var from previous sessions.
  */
 function renderList() {
-    if (!data.todo.length && !data.completed.length && !data.nottodo.length && !data.notdone.length) {
+    document.getElementById('todo').innerHTML = "";
+    document.getElementById('completed').innerHTML = "";
+    document.getElementById('nottodo').innerHTML = "";
+    document.getElementById('notdone').innerHTML = "";
+
+    if (!data.length) {
         return;
     } else {
-
-        for (var k = 0; k < data.nottodo.length; k++) {
-            var value = data.nottodo[k];
-            addItemToDOM(value, 3, 1);
-        }
-
-        for (var l = 0; l < data.notdone.length; l++) {
-            var value = data.notdone[l];
-            addItemToDOM(value, 4, 1);
-        }
-
-        for (var i = 0; i < data.todo.length; i++) {
-            var value = data.todo[i];
-            addItemToDOM(value, 1, 1);
-        }
-
-        for (var j = 0; j < data.completed.length; j++) {
-            var value = data.completed[j];
-            addItemToDOM(value, 2, 1);
+        for (var i = 0; i < data.length; i++) {
+            if(data[i].good && !data[i].completed) {
+                addItemToDOM(data[i].title, 1, 1);
+            } else if(data[i].good && data[i].completed) {
+                addItemToDOM(data[i].title, 2, 1);
+            } else if(!data[i].good && !data[i].completed) {
+                addItemToDOM(data[i].title, 3, 1)
+            } else {
+                addItemToDOM(data[i].title, 4, 1);
+            }
         }
     }
 
@@ -191,8 +184,6 @@ function addItemToDOM(text, type, index) {
     edit.classList.add('edit');
     edit.innterHTML = editSVG;
     edit.addEventListener('click', editItem);
-    edit.addEventListener('click', removeItem);
-
 
     buttons.appendChild(remove);
     buttons.appendChild(complete);
@@ -200,10 +191,6 @@ function addItemToDOM(text, type, index) {
     item.appendChild(buttons);
 
     list.insertBefore(item, list.childNodes[index]);
-}
-
-function dataObjectUpdate() {
-    localStorage.setItem('todoList', JSON.stringify(data));
 }
 
 /**
@@ -216,18 +203,15 @@ function removeItem() {
     var parentID = parent.id;
     var value = item.innerText;
 
-    if (parentID === 'todo') {
-        data.todo.splice(data.todo.indexOf(value), 1);
-    } else if (parentID === 'nottodo') {
-        data.nottodo.splice(data.nottodo.indexOf(value), 1);
-    } else if (parentID === 'notdone') {
-        data.notdone.splice(data.notdone.indexOf(value), 1);
-    } else {
-        data.completed.splice(data.todo.indexOf(value), 1);
-    }
-    dataObjectUpdate();
+    var removeId = data[getIndex(value)].id;
+    data.splice(getIndex(value), 1);
 
     parent.removeChild(item);
+
+    $.ajax({type:'get',
+        url:'/delete-habit',
+        data:"id=" + removeId
+    });
 }
 
 /**
@@ -243,61 +227,35 @@ function completeItem() {
     var parentID = parent.id;
     var value = item.innerText;
 
-    if (parentID === 'todo') {
-        data.todo.splice(data.todo.indexOf(value), 1);
-        data.completed.push(value);
-    } else if (parentID === 'nottodo') {
-        data.nottodo.splice(data.nottodo.indexOf(value), 1);
-        data.notdone.push(value);
-    } else if (parentID === 'notdone') {
-        data.notdone.splice(data.notdone.indexOf(value), 1);
-        data.nottodo.push(value);
-    } else {
-        data.completed.splice(data.todo.indexOf(value), 1);
-        data.todo.push(value);
-    }
+    data[getIndex(value)].completed = !data[getIndex(value)].completed;
 
     var target;
 
     if (parentID === 'todo') {
-        // Its a to do item to be completed
         target = document.getElementById('completed');
     } else if (parentID === 'nottodo') {
-        ;
         target = document.getElementById('notdone');
     } else if (parentID === 'notdone') {
         target = document.getElementById('nottodo');
     } else {
-        // Its a completed item to be redone
         target = document.getElementById('todo');
     }
 
-    // Shortened code:
-    // var target = (parentID === 'todo') ? document.getElementById('completed') : document.getElementById('todo');
-
     parent.removeChild(item);
     target.insertBefore(item, target.childNodes[0]);
-    dataObjectUpdate();
+
+    $.ajax({type:'get',
+        url:'/finish',
+        data:"id=" + data[getIndex(value)].id
+    });
 }
 
 function editItem() {
     var item = this.parentNode.parentNode;
-    // var text = item.innerText;
-
-    var parent = item.parentNode;
-    // console.log(parent.indexOf(item));
-    var parentID = parent.id;
     var value;
-    var oldvalue = item.innerText;
-    var index;
-
-    for (var i = 0; i < parent.childNodes.length; i++) {
-        if (parent.childNodes[i] == item) {
-            index = i;
-        }
-    }
-
-    console.log(index);
+    var oldValue = item.innerText;
+    var parent = item.parentNode;
+    var parentID = parent.id;
 
     if (parentID === 'todo' || parentID === 'completed') {
         value = document.getElementById('item').value;
@@ -306,27 +264,16 @@ function editItem() {
         value = document.getElementById('item2').value;
         document.getElementById('item2').value = '';
     }
-    var target;
 
-    if (value) {
-        // item.innerText = value;
-        if (parentID === 'todo') {
-            target = 1;
-            data.todo.splice((data.todo.length - index), 0, value);
-        } else if (parentID === 'nottodo') {
-            target = 3;
-            data.nottodo.splice((data.nottodo.length - index), 0, value);
-        } else if (parentID === 'notdone') {
-            target = 4;
-            data.notdone.splice((data.notdone.length - index), 0, value);
-        } else {
-            target = 2;
-            data.completed.splice((data.completed.length - index), 0, value);
+    item.innerText = value;
+    data[getIndex(oldValue)].title = value;
+
+    $.ajax({type:'get',
+        url:'/edit-title',
+        data:"id=" + data[getIndex(value)].id + "&title=" + value,
+        success: function(data){
+            alert('succesful');
         }
-
-        // item.removeItem();
-        addItemToDOM(value, target, index);
-        dataObjectUpdate();
-    }
+    });
 
 }

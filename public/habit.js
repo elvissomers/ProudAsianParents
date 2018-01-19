@@ -13,11 +13,11 @@ function refresh() {
         data = newData.slice(0);
     });
 
-    renderList();
+   // renderList();
 }
 
 refresh();
-renderList();
+//renderList();
 
 function habit(title, id, good) {
     this.title = title;
@@ -34,7 +34,7 @@ var editSVG = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 
 
 setInterval(function () {
     refresh();
-    renderList();
+   // renderList();
 }, 1000);
 
 document.getElementById('add').addEventListener('click', function () {
@@ -67,6 +67,7 @@ document.getElementById('item2').addEventListener('keydown', function (e) {
         addItem2(value);
     }
 });
+
 
 function addItem(value) {
     var index;
@@ -209,8 +210,8 @@ function removeItem() {
     parent.removeChild(item);
 
     $.ajax({type:'get',
-        url:'/delete-habit',
-        data:"id=" + removeId
+        url:'/delete-habit/' +removeId,
+        //data:"id=" + removeId
     });
 }
 

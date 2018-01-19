@@ -8,7 +8,33 @@ module.exports = function(app){
         password : 'toor',
         database : 'habit'
     });
-    
+    // var todolist = connection.query('SELECT id FROM habit ORDER BY id DESC LIMIT 1');
+    //
+    // connection.query('SELECT DISTINCT id, title, description, creationDate, good, timestamp AS completed ' +
+    //     'FROM habit LEFT JOIN habit_done on habit.id=habit_done.habit_id ' +
+    //     'ORDER BY habit.id',
+    //     function(err, rows, fields) {
+    //         if(!err) {
+    //             res.send(rows);
+    //         } else {
+    //             console.log(err);
+    //         }
+    //     });
+
+    app.get('/habit*', function (req, res){
+        connection.query('SELECT DISTINCT id, title, description, creationDate, good, timestamp AS completed ' +
+            'FROM habit LEFT JOIN habit_done on habit.id=habit_done.habit_id ' +
+            'ORDER BY habit.id',
+            function(err, rows, fields) {
+                if(!err) {
+                    res.render('habit', {data: rows})
+                } else {
+                    console.log(err);
+                }
+            });
+
+
+    })
 
     app.get('/add-habit', function (req, res) {
         var query = url.parse(req.url, true).query;
@@ -16,6 +42,7 @@ module.exports = function(app){
         connection.query('SELECT id FROM habit ORDER BY id DESC LIMIT 1', function(err, rows, fields){
             if(!err) {
                 var newId;
+
                 if(rows.length) {
                     newId = rows[0].id + 1;
                 } else {
@@ -35,18 +62,21 @@ module.exports = function(app){
         });
     });
 
-    app.get('/delete-habit', function(req, res){
-        var query = url.parse(req.url, true).query;
+    app.get('/delete-habit/:id', function(req, res, next){
+        //var query = url.parse(req.url, true).query;
 
-        connection.query('DELETE FROM habit_done WHERE habit_id=' + query["id"], function(err, rows, fields) {
+        var deleting = req.params.id;
+        console.log(deleting);
+        connection.query('DELETE FROM habit_done WHERE habit_id=' + deleting, function(err, rows, fields) {
             if(err)
                 console.log(err);
         });
 
-        connection.query('DELETE FROM habit WHERE id=' + query["id"], function(err, rows, fields) {
+        connection.query('DELETE FROM habit WHERE id=' + deleting, function(err, rows, fields) {
             if(err)
                 console.log(err);
         });
+        // res.render(connection.query('SELECT id FROM habit ORDER BY id DESC LIMIT 1'));
     });
 
     app.get('/finish', function(req, res) {

@@ -38,12 +38,25 @@
 
         <!-- Uncompleted tasks -->
         <ul class="todo" id="todo">
-
+            <% console.log(data) %>
+            <% for(var i = 0; i < data.length; i++) { %>
+            <li>
+                <% if(data[i].good && !data[i].completed) { %>
+                <%= data[i].title %>
+                <% } %>
+            </li>
+            <% } %>
         </ul>
 
         <!-- Completed tasks -->
         <ul class="todo" id="completed">
-
+            <% for(var i = 0; i < data.length; i++) { %>
+            <li>
+                <% if(data[i].good && data[i].completed) { %>
+                <% addItemToDOM(data[i].title, 2, 1); %>
+                <% } %>
+            </li>
+            <% } %>
         </ul>
     </section>
 
@@ -58,12 +71,24 @@
     </div>
         <!-- Uncompleted tasks -->
         <ul class="todo" id="nottodo">
-
+            <% for(var i = 0; i < data.length; i++) { %>
+            <li>
+                <% if(!data[i].good && !data[i].completed) { %>
+                <% addItemToDOM(data[i].title, 3, 1); %>
+                <% } %>
+            </li>
+            <% } %>
         </ul>
 
         <!-- Completed tasks -->
         <ul class="todo" id="notdone">
-
+            <% for(var i = 0; i < data.length; i++) { %>
+            <li>
+                <% if(!data[i].good && data[i].completed) { %>
+                <% addItemToDOM(data[i].title, 4, 1); %>
+                <% } %>
+            </li>
+            <% } %>
         </ul>
     </section>
 

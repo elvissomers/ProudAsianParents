@@ -8,22 +8,7 @@ module.exports = function(app){
         password : 'toor',
         database : 'habit'
     });
-
-    app.get('/habit', function(req, res){
-        res.render('habit');
-    })
-
-    app.get('/habir', function(req, res){
-        res.render('habit');
-    })
-
-    app.get('/habig', function(req, res){
-        res.render('habit');
-    })
-
-    app.get('/edithabit', function(req, res){
-
-    })
+    
 
     app.get('/add-habit', function (req, res) {
         var query = url.parse(req.url, true).query;
